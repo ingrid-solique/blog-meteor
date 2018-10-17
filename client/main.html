@@ -1,0 +1,77 @@
+<head>
+  <title>Blog TI</title>
+</head>
+
+<body></body>
+
+<template name="main">
+  <header id="header"></header>
+  {{>Template.dynamic template=content}}
+  <footer id="footer"></footer>
+</template>
+
+<template name="addCategoria">
+  <form name="formAddCategoria">
+    <input type="text" name="nome" placeholder="nome">
+    <button type="submit" id="saveCategoria">Save</button>
+  </form>
+</template>
+
+<template name="listCategoria">
+  <ul>
+    {{#each list}}
+      <li>{{nome}} <a href="categoria/edit/{{_id}}">Alterar</a> <a href="categoria/remove/{{_id}}">Delete</a> </li>
+    {{/each}}
+  </ul>
+</template>
+
+<template name="editCategoria">
+  <form name="formEditCategoria">
+    <input type="text" name="nome" placeholder="Nome" value="{{data.nome}}">
+    <button type="submit" id="editCategoria">Save</button>
+  </form>
+</template>
+
+<template name="addPost">
+  <form name="formAddPost">
+    <input type="text" name="titulo" placeholder="Título">
+    <input type="text" name="subtitulo" placeholder="Sub-Título">
+    <textarea name="conteudo" placeholder="Conteúdo"></textarea>
+    {{#each listaCategorias}}
+    <input type="checkbox" name="categoria" value="{{_id}}">{{nome}}
+    {{/each}}
+    <button type="submit" id="savePost">Save</button>
+  </form>
+</template>
+
+<template name="listPost">
+  <ul>
+    {{#each listPost}}
+      <li>
+        <a href="post/{{_id}}">{{titulo}}: {{subtitulo}}</a> 
+        <a href="post/edit/{{_id}}">Alterar</a> <a href="post/remove/{{_id}}">Delete</a> 
+      </li>
+    {{/each}}
+  </ul>
+</template>
+
+<template name="postShow">
+  <article>
+    <h3>{{show.titulo}}</h3> 
+    <h4>{{show.lastname}}</h4> 
+    <p>{{show.conteudo}}</p>
+    <p>Autor - </p>
+  </article>
+</template>
+
+<template name="editPost">
+    <form name="formEditPost">
+        <input type="text" name="titulo" placeholder="Título" value="{{data.titulo}}">
+        <input type="text" name="subtitulo" placeholder="Sub-Título" value="{{data.subtitulo}}">
+        <textarea name="conteudo" placeholder="Conteúdo">{{data.conteudo}}</textarea>
+        {{#each listaCategorias}}
+        <input type="checkbox" name="categoria" value="{{_id}}">{{nome}}
+        {{/each}}
+        <button type="submit" id="editPost">Save</button>
+      </form>
+</template>
