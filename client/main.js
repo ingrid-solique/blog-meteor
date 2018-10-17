@@ -175,6 +175,20 @@ Template.postShow.helpers({
 });
 
 Template.editPost.helpers({
+  ehAtivo: function(_id, categorias) {
+    console.log("_id", _id);
+    console.log("categorias", categorias);
+    for(var i=0; i<categorias.length; i++){
+      console.log("categorias[i]", categorias[i]);
+      if(categorias[i] == _id){
+        return true;
+      }
+    }
+    return false;
+  },
+});
+
+Template.editPost.helpers({
   listaCategorias: () => {
     return Categoria.find();
   }
