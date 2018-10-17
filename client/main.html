@@ -70,7 +70,9 @@
         <input type="text" name="subtitulo" placeholder="Sub-Título" value="{{data.subtitulo}}">
         <textarea name="conteudo" placeholder="Conteúdo">{{data.conteudo}}</textarea>
         {{#each listaCategorias}}
-        <input type="checkbox" name="categoria" value="{{_id}}">{{nome}}
+          {{#each ctg in data.categorias}}
+            <input type="checkbox" name="categoria" value="{{_id}}" {{isChecked ctg _id}}>{{nome}}
+          {{/each}}
         {{/each}}
         <button type="submit" id="editPost">Save</button>
       </form>
