@@ -86,6 +86,12 @@ Template.editCategoria.events({
   }
 });
 
+Template.menu.helpers({
+  listMenu: () => {
+    return Categoria.find();
+  }
+});
+
 /*********** POSTS ********/
 FlowRouter.route('/post/add', {
   action: () => {
@@ -111,7 +117,7 @@ FlowRouter.route('/post/:id', {
   }
 });
 
-FlowRouter.route('/post/edit/:id', {
+FlowRouter.route('/post/edit/:id', { 
   action: () => {
     BlazeLayout.render('main', {
       content: 'editPost'

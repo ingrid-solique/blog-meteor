@@ -1,13 +1,32 @@
 <head>
   <title>Blog TI</title>
+  <meta charset="UTF-8">
 </head>
 
 <body></body>
 
 <template name="main">
-  <header id="header"></header>
-  {{>Template.dynamic template=content}}
+  <header id="header">
+    {{>menu}}
+  </header>
+  <div class="container">
+    {{>Template.dynamic template=content}}
+  </div>
   <footer id="footer"></footer>
+</template>
+
+<template name="menu">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-light">
+    <a class="navbar-brand" href="#">Blog TI</a>
+    <div class="collapse navbar-collapse ml-3">
+      <div class="navbar-nav">
+        {{#each listMenu}}
+          <a class="navbar-brand nav-item nav-link active" href="categoria/edit/{{_id}}">{{nome}}</a>
+        {{/each}}
+        {{>loginButtons}}
+      </div>
+    </div>
+  </nav>
 </template>
 
 <template name="addCategoria">
@@ -20,7 +39,10 @@
 <template name="listCategoria">
   <ul>
     {{#each list}}
-      <li>{{nome}} <a href="categoria/edit/{{_id}}">Alterar</a> <a href="categoria/remove/{{_id}}">Delete</a> </li>
+      <li>
+        {{nome}} 
+        <a href="categoria/edit/{{_id}}">Alterar</a> <a href="categoria/remove/{{_id}}">Delete</a> 
+      </li>
     {{/each}}
   </ul>
 </template>
@@ -45,33 +67,44 @@
 </template>
 
 <template name="listPost">
-  <ul>
+  <div class="container">
+    <div id="list-example" class="list-group pt-2">
     {{#each listPost}}
-      <li>
-        <a href="post/{{_id}}">{{titulo}}: {{subtitulo}}</a> 
-        <a href="post/edit/{{_id}}">Alterar</a> <a href="post/remove/{{_id}}">Delete</a> 
-      </li>
+      <div class="jumbotron p-3 p-md-5 rounded .bg-light">
+        <p>
+          <a class="list-group-item-action" href="post/{{_id}}">
+          <h2>{{titulo}}</h2><h3>{{subtitulo}}</h3></a>
+          <h4><a href="post/edit/{{_id}}">Alterar</a> <a href="post/remove/{{_id}}">Delete</a> </h4>
+        </p>
+        <p>{{conteudo}}</p>
+        <span>Autor - </span>
+      </div>
     {{/each}}
-  </ul>
+    </div>
+  </div>
 </template>
 
 <template name="postShow">
-  <article>
-    <h3>{{show.titulo}}</h3> 
-    <h4>{{show.lastname}}</h4> 
-    <p>{{show.conteudo}}</p>
-    <p>Autor - </p>
-  </article>
+  <div class="container">
+    <article>
+      <p>
+        <h1>{{ show.titulo }}</h1>
+        <h4>{{ show.subtitulo }}</h4>
+      </p>
+      <p>{{ show.conteudo }}</p>
+      <p>Autor - </p>
+    </article>
+  </div>
 </template>
 
 <template name="editPost">
     <form name="formEditPost">
-        <input type="text" name="titulo" placeholder="Título" value="{{data.titulo}}">
-        <input type="text" name="subtitulo" placeholder="Sub-Título" value="{{data.subtitulo}}">
-        <textarea name="conteudo" placeholder="Conteúdo">{{data.conteudo}}</textarea>
-        {{#each listaCategorias}}
-            <input type="checkbox" name="categoria" value="{{_id}}" checked="{{ehAtivo _id data.categorias}}">{{nome}}
-        {{/each}}
-        <button type="submit" id="editPost">Save</button>
-      </form>
+      <input type="text" name="titulo" placeholder="Título" value="{{data.titulo}}">
+      <input type="text" name="subtitulo" placeholder="Sub-Título" value="{{data.subtitulo}}">
+      <textarea name="conteudo" placeholder="Conteúdo">{{data.conteudo}}</textarea>
+      {{#each listaCategorias}}
+          <input type="checkbox" name="categoria" value="{{_id}}" checked="{{ehAtivo _id data.categorias}}">{{nome}}
+      {{/each}}
+      <button type="submit" id="editPost">Save</button>
+    </form>
 </template>
