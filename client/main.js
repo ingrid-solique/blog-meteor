@@ -1,17 +1,74 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 
 import './main.html';
 
 const Categoria = new Mongo.Collection('categorias');
 const Post = new Mongo.Collection('posts');
+const Comentario = new Mongo.Collection('comentarios');
+
+/*********** Início Área Pública ***********/
+FlowRouter.route('/blog', {
+  action: () => {
+    BlazeLayout.render('main', {
+      content: 'listPost',
+      contentLogin: 'listPost'
+    });
+  }
+});
+
+FlowRouter.route('/post', {
+  action: () => {
+    BlazeLayout.render('main', {
+      content: 'listPost',
+      contentLogin: 'listPost'
+    });
+  }
+});
+
+FlowRouter.route('/post/:id', {
+  action: () => {
+    BlazeLayout.render('main', {
+      content: 'postShow',
+      contentLogin: 'postShow'
+    });
+  }
+});
+
+Template.menu.helpers({
+  listMenu: () => {
+    return Categoria.find();
+  }
+});
+
+Template.listPost.helpers({
+  listPost: () => {
+    console.log('User: ', Meteor.userId());
+    return Post.find();
+  }
+});
+
+Template.postShow.helpers({
+  show: () => {
+      var id = FlowRouter.getParam('id');
+
+      return Post.findOne({
+        _id: id
+      });
+  }
+});
+
+/*********** Fim Área Pública ***********/
+
+/*********** Início Área Privada ***********/
 
 /*********** CATEGORIAS ********/
 FlowRouter.route('/categoria/add', {
     action: () => {
       BlazeLayout.render('main', {
-        content: 'addCategoria'
+        contentLogin: 'addCategoria'
       });
     }
 });
@@ -19,7 +76,7 @@ FlowRouter.route('/categoria/add', {
 FlowRouter.route('/categoria', {
   action: () => {
     BlazeLayout.render('main', {
-      content: 'listCategoria'
+      contentLogin: 'listCategoria'
     })
   }
 });
@@ -27,7 +84,7 @@ FlowRouter.route('/categoria', {
 FlowRouter.route('/categoria/edit/:id', {
   action: () => {
     BlazeLayout.render('main', {
-      content: 'editCategoria'
+      contentLogin: 'editCategoria'
     })
   }
 });
@@ -39,7 +96,6 @@ FlowRouter.route('/categoria/remove/:id', {
     FlowRouter.go('/categoria');
   }
 });
-
 
 Template.addCategoria.events({
   'click #saveCategoria': (event, template) => {
@@ -55,7 +111,7 @@ Template.addCategoria.events({
 });
 
 Template.listCategoria.helpers({
-  list: () => {
+  listCtg: () => {
     return Categoria.find();
   }
 });
@@ -65,7 +121,7 @@ Template.editCategoria.helpers({
     var id = FlowRouter.getParam('id');
 
     return Categoria.findOne({
-        _id: id
+      _id: id
     });
   }
 });
@@ -86,33 +142,13 @@ Template.editCategoria.events({
   }
 });
 
-Template.menu.helpers({
-  listMenu: () => {
-    return Categoria.find();
-  }
-});
+/*********** Fim CATEGORIAS ***********/
 
-/*********** POSTS ********/
-FlowRouter.route('/post/add', {
+/*********** POSTS ***********/
+FlowRouter.route('/postt/add', { 
   action: () => {
     BlazeLayout.render('main', {
-      content: 'addPost'
-    });
-  }
-});
-
-FlowRouter.route('/post', {
-  action: () => {
-    BlazeLayout.render('main', {
-      content: 'listPost'
-    });
-  }
-});
-
-FlowRouter.route('/post/:id', {
-  action: () => {
-    BlazeLayout.render('main', {
-      content: 'postShow'
+      contentLogin: 'addPost'
     });
   }
 });
@@ -120,7 +156,7 @@ FlowRouter.route('/post/:id', {
 FlowRouter.route('/post/edit/:id', { 
   action: () => {
     BlazeLayout.render('main', {
-      content: 'editPost'
+      contentLogin: 'editPost'
     });
   }
 });
@@ -132,8 +168,6 @@ FlowRouter.route('/post/remove/:id', {
     FlowRouter.go('/post');
   }
 });
-
-
 
 Template.addPost.helpers({
   listaCategorias: () => {
@@ -154,7 +188,8 @@ Template.addPost.events({
       titulo: template.find('input[name="titulo"]').value,
       subtitulo: template.find('input[name="subtitulo"]').value,
       conteudo: template.find('textarea[name="conteudo"]').value,
-      categorias: categoria
+      categorias: categoria,
+      usuario: Meteor.userId()
     };
     
     console.log(post);
@@ -164,28 +199,9 @@ Template.addPost.events({
   }
 });
 
-Template.listPost.helpers({
-  listPost: () => {
-    return Post.find();
-  }
-});
-
-Template.postShow.helpers({
-  show: () => {
-      var id = FlowRouter.getParam('id');
-
-      return Post.findOne({
-          _id: id
-      });
-  }
-});
-
 Template.editPost.helpers({
   ehAtivo: function(_id, categorias) {
-    console.log("_id", _id);
-    console.log("categorias", categorias);
     for(var i=0; i<categorias.length; i++){
-      console.log("categorias[i]", categorias[i]);
       if(categorias[i] == _id){
         return true;
       }
@@ -214,6 +230,8 @@ Template.editPost.events({
   'click #editPost': (event, template) => {
     event.preventDefault();
 
+    var id = FlowRouter.getParam('id');
+
     var selected = template.findAll( "input[type=checkbox]:checked");
     var categoria = selected.map(function(item){ 
       return item.value
@@ -225,11 +243,13 @@ Template.editPost.events({
       conteudo: template.find('textarea[name="conteudo"]').value,
       categorias: categoria
     };
-    
+
     Post.update({
       _id: id
     }, post);
-    //FlowRouter.go('/post');
+    FlowRouter.go('/post');
   }
 });
+
+/*********** Fim POSTS ***********/
 
