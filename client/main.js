@@ -253,3 +253,31 @@ Template.editPost.events({
 
 /*********** Fim POSTS ***********/
 
+/*********** COMENTARIOS ***********/
+Template.comentarios.events({
+  'click #saveComentario': (event, template) => {
+    event.preventDefault();
+
+    var id = FlowRouter.getParam('id');
+
+    let comentario = {
+      nome: template.find('input[name="nomeUser"]').value,
+      comentario: template.find('textarea[name="comentario"]').value,
+      post: id
+    };
+
+    Comentario.insert(comentario);
+    template.find('input[name="nomeUser"]').value = "";
+    template.find('input[name="comentario"]').value = "";
+  }
+});
+
+Template.comentarios.helpers({
+  listComentarios: () => {
+    var id = FlowRouter.getParam('id');
+
+    return Comentario.find({
+      post: id
+    });
+  }
+});

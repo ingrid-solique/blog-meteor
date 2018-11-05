@@ -68,10 +68,26 @@
       <p>{{ show.conteudo }}</p>
       <p>Autor - </p>
     </article>
+    {{>comentarios}}
   </div>
 </template>
 
+<template name="comentarios">
+  <h3>Comentários</h3>
 
+  {{#each listComentarios}}
+    <div>
+      <h4>{{nome}}</h4>
+      <p>{{comentario}}</p>
+    </div>
+  {{/each}}
+
+  <form name="formAddComentario">
+    <input type="text" name="nomeUser" placeholder="Usuário">
+    <textarea name="comentario" placeholder="Comentário"></textarea>
+    <button type="submit" id="saveComentario">Enviar</button>
+  </form>
+</template>
 <!-- Fim da área pública -->
 
 <!-- Início da área privada -->
