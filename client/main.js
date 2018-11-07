@@ -144,7 +144,6 @@ FlowRouter.route('/post/remove/:id', {
 
 Template.listPost.helpers({
   listPost: () => {
-    console.log('User: ', Meteor.userId());
     return Post.find();
   }
 });
@@ -156,6 +155,17 @@ Template.postShow.helpers({
       return Post.findOne({
         _id: id
       });
+  },
+  autor: () => {
+    var id = FlowRouter.getParam('id');
+
+    post = Post.findOne({_id: id});
+
+    usuarioNome = Meteor.users.findOne({ _id : post.usuario });
+
+    console.log("user: ", usuarioNome);
+
+    return usuarioNome;
   }
 });
 
@@ -271,3 +281,67 @@ Template.comentarios.helpers({
     });
   }
 });
+
+
+/*********** USUARIOS ********/
+FlowRouter.route('/login', {
+  action: () => {
+    BlazeLayout.render('main', {
+      content: 'login'
+    });
+  }
+});
+
+FlowRouter.route('/registrar', {
+  action: () => {
+    BlazeLayout.render('main', {
+      content: 'registrarUser'
+    });
+  }
+});
+
+Template.registrarUser.events({
+  'click #saveUsuario': (event, template) => {
+    event.preventDefault();
+
+    var nomeUser = template.find('input[name="registroUsuario"]').value;
+    var emailVar = template.find('input[name="registroEmail"]').value;
+    var passwordVar = template.find('input[name="registroPassword"]').value;
+
+    var options = {
+      username: nomeUser,
+      emails: [{
+        address: emailVar,
+        verified: false
+      }],
+      password: passwordVar
+    };
+
+    Accounts.createUser(options , function(err){
+      loginCallBack(error);
+    });
+
+    FlowRouter.go('/blog');
+  }
+});
+
+Template.login.events({
+  'click #logar': (event, template) => {
+    event.preventDefault();
+
+    var emailVar = template.find('input[name="loginEmail"]').value;
+    var passwordVar = template.find('input[name="loginPassword"]').value;
+
+    Meteor.loginWithPassword(emailVar, passwordVar);  
+
+    FlowRouter.go('/blog');
+  }
+});
+
+Template.sair.events({
+  'click .logout': function(event){
+    event.preventDefault();
+    Meteor.logout();
+  }
+});
+

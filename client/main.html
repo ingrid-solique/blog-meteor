@@ -17,12 +17,19 @@
 
 <template name="menu">
   <nav class="navbar navbar-expand-lg navbar-dark bg-light">
-    <a class="navbar-brand" href="#">Blog TI</a>
+    <a class="navbar-brand" href="/blog/">Blog TI</a>
     <div class="collapse navbar-collapse ml-3">
       <div class="navbar-nav">
         <a class="navbar-brand nav-item nav-link active" href="/post">Artigos</a>
         <a class="navbar-brand nav-item nav-link active" href="/categoria/">Categorias</a>
-        {{>loginButtons}}
+        {{#if currentUser}}
+          {{>sair}}
+        {{else}}
+          <a class="navbar-brand nav-item nav-link active" href="/login/">Login</a>
+          <!--{{> register}}
+          {{> login}}-->
+        {{/if}}
+        <!--{{>loginButtons}}-->
       </div>
     </div>
   </nav>
@@ -32,20 +39,23 @@
   <div class="container">
     <div style="padding: 20px;">
       <h1 style="display: inline-block; margin: 0;">Artigos</h1>
-      <a class="btn btn-success" style="display: inline-block; float: right;" href="/postt/add">Adicionar Artigos</a>
+      <a class="btn btn-success" style="display: inline-block; float: right;" href="/postt/add">Adicionar Artigo</a>
     </div>
     
     <div id="list-example" class="list-group pt-2">
     {{#each listPost}}
       <div class="jumbotron p-2 p-md-4 rounded .bg-light">
-        <p>
-          <a class="list-group-item-action" href="/post/{{_id}}">
-            <h2>{{titulo}}</h2><h3>{{subtitulo}}</h3>
+        <div>
+          <a class="list-group-item-action" style="display: inline-block; margin: 0;" href="/post/{{_id}}">
+            <h2 style="display: inline-block;">{{titulo}}</h2>
+            <h3 style="display: inline-block;">{{subtitulo}}</h3>
           </a>
-        </p>
+          <div style="display: inline-block; float: right; margin-top: 15px;">
+            <a href="/post/edit/{{_id}}" style="display: inline-block;" class="btn btn-primary">Alterar</a>
+            <a href="/post/remove/{{_id}}" style="display: inline-block;" class="btn btn-primary">Deletar</a>
+          </div>
+        </div>
         <p>{{conteudo}}</p>
-        <span>Autor - {{ currentUser.username }}</span>
-        <p><a href="/post/edit/{{_id}}">Alterar</a> <a href="/post/remove/{{_id}}">Delete</a></p>
       </div>
     {{/each}}
     </div>
@@ -59,8 +69,8 @@
         <h1>{{ show.titulo }}</h1>
         <h4>{{ show.subtitulo }}</h4>
       </p>
-      <p>{{ show.conteudo }}</p>
-      <p>Autor - </p>
+      <p style="text-align: justify; font-size: 18px;">{{ show.conteudo }}</p>
+      <p style="font-size: 14px;">Autor - {{autor.username}} </p>
     </article>
     {{>comentarios}}
   </div>
@@ -182,4 +192,41 @@
       <button type="submit" class="btn btn-primary" id="editCategoria">Salvar</button>
     </form>
   </div>
+</template>
+
+<template name="registrarUser">
+    <form name="formAddUsuario">
+      <div class="form-group">
+        <label for="registroUsuario">Nome Completo</label>
+        <input type="text" class="form-control" name="registroUsuario">
+      </div>
+      <div class="form-group">
+        <label for="registroEmail">Email</label>
+        <input type="email" class="form-control" name="registroEmail">
+      </div>
+      <div class="form-group">
+        <label for="registroPassword">Senha</label>
+        <input type="password" class="form-control" name="registroPassword">
+      </div>
+      <button type="submit" class="btn btn-primary" id="saveUsuario">Salvar</button>
+    </form>
+</template>
+
+<template name="login">
+  <form name="formLogin">
+    <div class="form-group">
+      <label for="loginEmail">Email</label>
+      <input type="email" class="form-control" name="loginEmail">
+    </div>
+    <div class="form-group">
+      <label for="loginPassword">Senha</label>
+      <input type="password" class="form-control" name="loginPassword">
+    </div>
+    <button type="submit" class="btn btn-primary" id="logar">Entrar</button>
+  </form>
+  <a class="navbar-brand nav-item nav-link active" href="/registrar/">Cadastre-se</a>
+</template>
+
+<template name="sair">
+  <a href="#" class="logout">Logout</a>
 </template>
