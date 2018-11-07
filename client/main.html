@@ -10,29 +10,18 @@
     {{>menu}}
   </header>
   <div class="container">
-    {{#if currentUser}}
-      {{>Template.dynamic template=contentLogin}}
-    {{else}}
-      {{>Template.dynamic template=content}}
-    {{/if}}
+    {{>Template.dynamic template=content}}
   </div>
   <footer id="footer"></footer>
 </template>
 
-<!-- Início da área pública -->
 <template name="menu">
   <nav class="navbar navbar-expand-lg navbar-dark bg-light">
     <a class="navbar-brand" href="#">Blog TI</a>
     <div class="collapse navbar-collapse ml-3">
       <div class="navbar-nav">
-        {{#if currentUser}}
-          <a class="navbar-brand nav-item nav-link active" href="/post/">Artigos</a>
-          <a class="navbar-brand nav-item nav-link active" href="/categoria/">Categorias</a>
-        {{else}}
-          {{#each listMenu}}
-            <a class="navbar-brand nav-item nav-link active" href="/categoria/edit/{{_id}}">{{nome}}</a>
-          {{/each}}
-        {{/if}}
+        <a class="navbar-brand nav-item nav-link active" href="/post">Artigos</a>
+        <a class="navbar-brand nav-item nav-link active" href="/categoria/">Categorias</a>
         {{>loginButtons}}
       </div>
     </div>
@@ -41,9 +30,14 @@
 
 <template name="listPost">
   <div class="container">
+    <div style="padding: 20px;">
+      <h1 style="display: inline-block; margin: 0;">Artigos</h1>
+      <a class="btn btn-success" style="display: inline-block; float: right;" href="/postt/add">Adicionar Artigos</a>
+    </div>
+    
     <div id="list-example" class="list-group pt-2">
     {{#each listPost}}
-      <div class="jumbotron p-3 p-md-5 rounded .bg-light">
+      <div class="jumbotron p-2 p-md-4 rounded .bg-light">
         <p>
           <a class="list-group-item-action" href="/post/{{_id}}">
             <h2>{{titulo}}</h2><h3>{{subtitulo}}</h3>
@@ -51,7 +45,7 @@
         </p>
         <p>{{conteudo}}</p>
         <span>Autor - {{ currentUser.username }}</span>
-        <p><a href="/post/edit/{{_id}}">Alterar</a> <a href="/post/remove/{{_id}}">Delete</a> </p>
+        <p><a href="/post/edit/{{_id}}">Alterar</a> <a href="/post/remove/{{_id}}">Delete</a></p>
       </div>
     {{/each}}
     </div>
@@ -77,28 +71,97 @@
 
   {{#each listComentarios}}
     <div>
-      <h4>{{nome}}</h4>
+      {{#unless isEmpty attribute2}}
+        <p><strong>{{nome}}</strong></p>
+      {{else}}
+      <p><em>Anônimo</em></p>
+      {{/unless}}
       <p>{{comentario}}</p>
     </div>
   {{/each}}
-
+  
   <form name="formAddComentario">
-    <input type="text" name="nomeUser" placeholder="Usuário">
-    <textarea name="comentario" placeholder="Comentário"></textarea>
-    <button type="submit" id="saveComentario">Enviar</button>
+    <div class="form-group">
+      <label for="nomeUser">Usuário</label>
+      <input type="text" class="form-control" name="nomeUser">
+    </div>
+    <div class="form-group">
+      <label for="comentario">Comentário</label>
+      <textarea name="comentario" class="form-control"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary" id="saveComentario">Enviar</button>
   </form>
 </template>
-<!-- Fim da área pública -->
 
-<!-- Início da área privada -->
+<template name="addPost">
+  <div class="container" style="width: 70%;">
+    <form name="formAddPost">
+      <div class="form-group">
+        <label for="titulo">Titulo</label>
+        <input type="text" class="form-control" name="titulo">
+      </div>
+      <div class="form-group">
+        <label for="subtitulo">Sub-Título</label>
+        <input type="text" class="form-control" name="subtitulo">
+      </div>
+      <div class="form-group">
+        <label for="conteudo">Conteúdo</label>
+        <textarea class="form-control" name="conteudo"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Categorias</label><br>
+        {{#each listaCategorias}}
+          <input type="checkbox" name="categoria" value="{{_id}}"> {{nome}}
+        {{/each}}
+      </div>
+      <button type="submit" class="btn btn-primary" id="savePost">Salvar</button>
+    </form>
+  </div>
+</template>
+
+<template name="editPost">
+  <div class="container" style="width: 70%;">
+    <form name="formEditPost">
+      <div class="form-group">
+        <label for="titulo">Titulo</label>
+        <input type="text" class="form-control" name="titulo" value="{{data.titulo}}">
+      </div>
+      <div class="form-group">
+        <label for="subtitulo">Sub-Título</label>
+      <input type="text" class="form-control" name="subtitulo" value="{{data.subtitulo}}">
+      </div>
+      <div class="form-group">
+        <label for="conteudo">Conteúdo</label>
+        <textarea class="form-control" name="conteudo">{{data.conteudo}}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Categorias</label><br>
+        {{#each listaCategorias}}
+          <input type="checkbox" name="categoria" value="{{_id}}" checked="{{ehAtivo _id data.categorias}}"> {{nome}}
+        {{/each}}
+      </div>
+      <button type="submit" class="btn btn-primary" id="editPost">Salvar</button>
+    </form>
+  </div>
+</template>
+
 <template name="addCategoria">
-  <form name="formAddCategoria">
-    <input type="text" name="nome" placeholder="nome">
-    <button type="submit" id="saveCategoria">Salvar</button>
-  </form>
+  <div class="container" style="width: 70%;">
+    <form name="formAddCategoria">
+      <div class="form-group">
+        <label for="nome">Nome</label>
+        <input type="text" class="form-control" name="nome">
+      </div>
+      <button type="submit" class="btn btn-primary" id="saveCategoria">Salvar</button>
+    </form>
+  </div>
 </template>
 
 <template name="listCategoria">
+  <div style="padding: 20px;">
+    <h1 style="display: inline-block; margin: 0;">Categorias</h1>
+    <a class="btn btn-success" style="display: inline-block; float: right;" href="/categoria/add">Adicionar Categoria</a>
+  </div>
   <ul>
     {{#each listCtg}}
       <li>
@@ -110,34 +173,13 @@
 </template>
 
 <template name="editCategoria">
-  <form name="formEditCategoria">
-    <input type="text" name="nome" placeholder="Nome" value="{{data.nome}}">
-    <button type="submit" id="editCategoria">Salvar</button>
-  </form>
-</template>
-
-<template name="addPost">
-  <form name="formAddPost">
-    <input type="text" name="titulo" placeholder="Título">
-    <input type="text" name="subtitulo" placeholder="Sub-Título">
-    <textarea name="conteudo" placeholder="Conteúdo"></textarea>
-    {{#each listaCategorias}}
-    <input type="checkbox" name="categoria" value="{{_id}}">{{nome}}
-    {{/each}}
-    <button type="submit" id="savePost">Salvar</button>
-  </form>
-</template>
-
-<template name="editPost">
-    <form name="formEditPost">
-      <input type="text" name="titulo" placeholder="Título" value="{{data.titulo}}">
-      <input type="text" name="subtitulo" placeholder="Sub-Título" value="{{data.subtitulo}}">
-      <textarea name="conteudo" placeholder="Conteúdo">{{data.conteudo}}</textarea>
-      {{#each listaCategorias}}
-          <input type="checkbox" name="categoria" value="{{_id}}" checked="{{ehAtivo _id data.categorias}}">{{nome}}
-      {{/each}}
-      <button type="submit" id="editPost">Salvar</button>
+  <div class="container" style="width: 70%;">
+    <form name="formEditCategoria">
+      <div class="form-group">
+        <label for="nome">Nome</label>
+        <input type="text" class="form-control" name="nome" value="{{data.nome}}">
+      </div>
+      <button type="submit" class="btn btn-primary" id="editCategoria">Salvar</button>
     </form>
+  </div>
 </template>
-
-<!-- Fim da área privada -->

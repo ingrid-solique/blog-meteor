@@ -9,66 +9,23 @@ const Categoria = new Mongo.Collection('categorias');
 const Post = new Mongo.Collection('posts');
 const Comentario = new Mongo.Collection('comentarios');
 
-/*********** Início Área Pública ***********/
 FlowRouter.route('/blog', {
   action: () => {
     BlazeLayout.render('main', {
-      content: 'listPost',
-      contentLogin: 'listPost'
+      content: 'listPost'
     });
   }
 });
 
-FlowRouter.route('/post', {
-  action: () => {
-    BlazeLayout.render('main', {
-      content: 'listPost',
-      contentLogin: 'listPost'
-    });
-  }
+Template.registerHelper("isEmpty", function (object) {
+  return jQuery.isEmpty(object);
 });
-
-FlowRouter.route('/post/:id', {
-  action: () => {
-    BlazeLayout.render('main', {
-      content: 'postShow',
-      contentLogin: 'postShow'
-    });
-  }
-});
-
-Template.menu.helpers({
-  listMenu: () => {
-    return Categoria.find();
-  }
-});
-
-Template.listPost.helpers({
-  listPost: () => {
-    console.log('User: ', Meteor.userId());
-    return Post.find();
-  }
-});
-
-Template.postShow.helpers({
-  show: () => {
-      var id = FlowRouter.getParam('id');
-
-      return Post.findOne({
-        _id: id
-      });
-  }
-});
-
-/*********** Fim Área Pública ***********/
-
-/*********** Início Área Privada ***********/
 
 /*********** CATEGORIAS ********/
 FlowRouter.route('/categoria/add', {
     action: () => {
       BlazeLayout.render('main', {
-        contentLogin: 'addCategoria'
+        content: 'addCategoria'
       });
     }
 });
@@ -76,7 +33,7 @@ FlowRouter.route('/categoria/add', {
 FlowRouter.route('/categoria', {
   action: () => {
     BlazeLayout.render('main', {
-      contentLogin: 'listCategoria'
+      content: 'listCategoria'
     })
   }
 });
@@ -84,7 +41,7 @@ FlowRouter.route('/categoria', {
 FlowRouter.route('/categoria/edit/:id', {
   action: () => {
     BlazeLayout.render('main', {
-      contentLogin: 'editCategoria'
+      content: 'editCategoria'
     })
   }
 });
@@ -145,10 +102,26 @@ Template.editCategoria.events({
 /*********** Fim CATEGORIAS ***********/
 
 /*********** POSTS ***********/
+FlowRouter.route('/post', {
+  action: () => {
+    BlazeLayout.render('main', {
+      content: 'listPost'
+    });
+  }
+});
+
+FlowRouter.route('/post/:id', {
+  action: () => {
+    BlazeLayout.render('main', {
+      content: 'postShow'
+    });
+  }
+});
+
 FlowRouter.route('/postt/add', { 
   action: () => {
     BlazeLayout.render('main', {
-      contentLogin: 'addPost'
+      content: 'addPost'
     });
   }
 });
@@ -156,7 +129,7 @@ FlowRouter.route('/postt/add', {
 FlowRouter.route('/post/edit/:id', { 
   action: () => {
     BlazeLayout.render('main', {
-      contentLogin: 'editPost'
+      content: 'editPost'
     });
   }
 });
@@ -166,6 +139,23 @@ FlowRouter.route('/post/remove/:id', {
     var id = FlowRouter.getParam('id');
     Post.remove(id);
     FlowRouter.go('/post');
+  }
+});
+
+Template.listPost.helpers({
+  listPost: () => {
+    console.log('User: ', Meteor.userId());
+    return Post.find();
+  }
+});
+
+Template.postShow.helpers({
+  show: () => {
+      var id = FlowRouter.getParam('id');
+
+      return Post.findOne({
+        _id: id
+      });
   }
 });
 
