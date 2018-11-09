@@ -1,5 +1,4 @@
 import { Template } from 'meteor/templating';
-import { ReactiveVar } from 'meteor/reactive-var';
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 
@@ -19,6 +18,10 @@ FlowRouter.route('/blog', {
 
 Template.registerHelper("isEmpty", function (object) {
   return jQuery.isEmpty(object);
+});
+
+Template.registerHelper("truncate", function(text) {
+  return text.substring(0, 200).concat("...");
 });
 
 /*********** CATEGORIAS ********/
@@ -259,7 +262,7 @@ Template.comentarios.events({
     event.preventDefault();
 
     var id = FlowRouter.getParam('id');
-
+    
     let comentario = {
       nome: template.find('input[name="nomeUser"]').value,
       comentario: template.find('textarea[name="comentario"]').value,
@@ -267,8 +270,8 @@ Template.comentarios.events({
     };
 
     Comentario.insert(comentario);
-    template.find('input[name="nomeUser"]').value = "";
-    template.find('input[name="comentario"]').value = "";
+    template.find('input[name="nomeUser"]').value = " ";
+    template.find('textarea[name="comentario"]').value = " ";
   }
 });
 

@@ -16,16 +16,16 @@
 </template>
 
 <template name="menu">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-light">
-    <a class="navbar-brand" href="/blog/">Blog TI</a>
+  <nav class="navbar navbar-dark bg-primary">
+    <a class="navbar-brand" style="color:white;" href="/blog/">Blog TI</a>
     <div class="collapse navbar-collapse ml-3">
       <div class="navbar-nav">
-        <a class="navbar-brand nav-item nav-link active" href="/post">Artigos</a>
-        <a class="navbar-brand nav-item nav-link active" href="/categoria/">Categorias</a>
+        <a class="navbar-brand nav-item nav-link active" style="color:white;" href="/post">Artigos</a>
+        <a class="navbar-brand nav-item nav-link active" style="color:white;" href="/categoria/">Categorias</a>
         {{#if currentUser}}
           {{>sair}}
         {{else}}
-          <a class="navbar-brand nav-item nav-link active" href="/login/">Login</a>
+          <a class="navbar-brand nav-item nav-link active" style="color:white;" href="/login/">Login</a>
           <!--{{> register}}
           {{> login}}-->
         {{/if}}
@@ -47,15 +47,15 @@
       <div class="jumbotron p-2 p-md-4 rounded .bg-light">
         <div>
           <a class="list-group-item-action" style="display: inline-block; margin: 0;" href="/post/{{_id}}">
-            <h2 style="display: inline-block;">{{titulo}}</h2>
-            <h3 style="display: inline-block;">{{subtitulo}}</h3>
+            <h2 style="display: inline-block; color: black;">{{titulo}}</h2>
+            <h3 style="display: inline-block; color: black;">{{subtitulo}}</h3>
           </a>
           <div style="display: inline-block; float: right; margin-top: 15px;">
             <a href="/post/edit/{{_id}}" style="display: inline-block;" class="btn btn-primary">Alterar</a>
             <a href="/post/remove/{{_id}}" style="display: inline-block;" class="btn btn-primary">Deletar</a>
           </div>
         </div>
-        <p>{{conteudo}}</p>
+        <p>{{truncate conteudo}}</p>
       </div>
     {{/each}}
     </div>
@@ -81,11 +81,11 @@
 
   {{#each listComentarios}}
     <div>
-      {{#unless isEmpty attribute2}}
-        <p><strong>{{nome}}</strong></p>
+      {{#if isEmpty nome }}
+        <p><strong>Anônimo</strong></p>
       {{else}}
-      <p><em>Anônimo</em></p>
-      {{/unless}}
+        <p><strong>{{ nome }}</strong></p>
+      {{/if}}
       <p>{{comentario}}</p>
     </div>
   {{/each}}
@@ -228,5 +228,5 @@
 </template>
 
 <template name="sair">
-  <a href="#" class="logout">Logout</a>
+  <a href="#" class="logout navbar-brand nav-item nav-link active" style="color:white;">Logout</a>
 </template>
